@@ -2,11 +2,24 @@
   "name": "flow",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
+  "type": "module",
   "scripts": {
+    "start": "npx tsx main/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Sean Hutchison <sean.k.hutchison@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/opus": "^0.8.0",
+    "@discordjs/rest": "^0.5.0",
+    "@discordjs/voice": "^0.11.0",
+    "discord-api-types": "^0.36.1",
+    "discord.js": "^14.3.0",
+    "ffmpeg": "^0.0.4",
+    "google-auth-library": "^8.5.1",
+    "googleapis": "^107.0.0",
+    "libsodium-wrappers": "^0.7.10"
+  }
 }
