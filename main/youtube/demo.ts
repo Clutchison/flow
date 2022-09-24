@@ -13,22 +13,26 @@ var TOKEN_PATH = TOKEN_DIR + 'youtube-nodejs-quickstart.json';
 
 const OAuth2 = google.auth.OAuth2;
 
-export const getVideo = () => {
-  authorize(fetchVideo);
+export const getVideo = id => {
+  authorize(fetchVideo, id);
+}
+
+export const searchForVideo = () => {
+  authorize(searchVideo);
 }
 
 export const getChannel = () => {
   authorize(fetchChannel);
 }
 
-const fetchVideo = (auth) => {
+const searchVideo = (auth) => {
   const service = google.youtube({
     version: 'v3',
     auth: auth,
   });
   service.search.list({
     part: ['id, snippet'],
-    maxResults: 3,
+    maxResults: 1,
     q: 'Never gonna give you up'
   }).then(results => {
     console.log(JSON.stringify(results, null, 2));
@@ -36,15 +40,21 @@ const fetchVideo = (auth) => {
     console.log(err);
   })
 };
+// dQw4w9WgXcQ
+const fetchVideo = (auth, id) => {
+  const service = google.youtube({
+    version: 'v3',
+    auth: auth,
+  });
+  service.videos.list({
+    part: ['player'],
+    id: [id]
+  })
+  .then(results => console.log(JSON.stringify(results, null, 2)))
+  .catch(err => console.log(err));
+}
 
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- *
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
-function authorize(callback) {
+function authorize(callback, ...args) {
   const credentials = YOUTUBE_CREDS;
   var clientSecret = credentials.installed.client_secret;
   var clientId = credentials.installed.client_id;
@@ -57,19 +67,11 @@ function authorize(callback) {
       getNewToken(oauth2Client, callback);
     } else {
       oauth2Client.credentials = JSON.parse(token);
-      callback(oauth2Client);
+      callback(oauth2Client, ...args);
     }
   });
 }
 
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- *
- * @param {google.auth.OAuth2} oauth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback to call with the authorized
- *     client.
- */
 function getNewToken(oauth2Client, callback) {
   var authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
@@ -94,11 +96,6 @@ function getNewToken(oauth2Client, callback) {
   });
 }
 
-/**
- * Store token to disk be used in later program executions.
- *
- * @param {Object} token The token to store to disk.
- */
 function storeToken(token) {
   try {
     fs.mkdirSync(TOKEN_DIR);
@@ -113,11 +110,6 @@ function storeToken(token) {
   });
 }
 
-/**
- * Lists the names and IDs of up to 10 files.
- *
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
 const fetchChannel = (auth) => {
   var service = google.youtube('v3');
   service.channels.list({

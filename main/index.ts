@@ -1,13 +1,13 @@
 import { Interaction } from 'discord.js';
 import { TOKEN } from './config/.secrets.js';
 import client from './discord';
-import { getChannel, getVideo } from './youtube/demo.js';
+import { getChannel, getVideo, searchForVideo } from './youtube/demo.js';
 // const yt = require(resolve('./main/youtube/demo.ts'));
 
 
 client.on('ready', () => {
   console.log(`Logged in as ${client?.user?.tag}!`);
-  const creds = getVideo();
+  const creds = getVideo('dQw4w9WgXcQ');
   // yt.getVideo('Never gonna give you up');
 });
 
